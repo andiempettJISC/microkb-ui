@@ -41,5 +41,5 @@
   "devDependencies": {
     "web-vitals": "^4.2.4"
   },
-  "proxy": "https://api.jisc.ac.uk"
+  "proxy": "https://dev.api.jisc.ac.uk"
 }

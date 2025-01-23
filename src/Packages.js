@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import 'bulma/css/bulma.min.css';
 
-const Library = () => {
+const Packages = () => {
   const [packages, setPackages] = useState([]);
   const [filteredPackages, setFilteredPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +16,7 @@ const Library = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await fetch('/jisc-exp-tpd-public-api-v1/api/v1/publicExport/idx?format=json&max=0');
+        const response = await fetch('/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/idx?format=json&max=0');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -22,9 +24,9 @@ const Library = () => {
         const packagesData = data.packages || [];
         setPackages(packagesData);
         setFilteredPackages(packagesData);
+        setLoading(false);
       } catch (err) {
         setError(err.message);
-      } finally {
         setLoading(false);
       }
     };
@@ -47,7 +49,7 @@ const Library = () => {
   const handleSort = (event) => {
     const option = event.target.value;
     setSortOption(option);
-  
+
     const sorted = [...filteredPackages].sort((a, b) => {
       if (option === 'id') {
         // Convert identifier to number for proper numeric sorting
@@ -59,7 +61,7 @@ const Library = () => {
       }
       return 0;
     });
-  
+
     setFilteredPackages(sorted);
   };
 
@@ -81,26 +83,21 @@ const Library = () => {
 
   return (
     <div className="container mt-6">
-      <h1 className="title is-4">Available Packages</h1>
+      <h1 className="title is-3">Packages</h1>
 
-      {/* Search Input */}
-      <div className="field mt-4">
-        <div className="control">
+      {/* Combined Search and Sort Bar */}
+      <div className="field is-grouped mt-4">
+        <div className="control is-expanded has-icons-right">
           <input
-            className="input"
+            className="input is-primary"
             type="text"
             placeholder="Search packages by name or identifier..."
             value={searchTerm}
             onChange={handleSearch}
           />
         </div>
-      </div>
-
-      {/* Sort Options */}
-      <div className="field mt-4">
-        <label className="label">Sort By</label>
         <div className="control">
-          <div className="select">
+          <div className="select is-primary">
             <select value={sortOption} onChange={handleSort}>
               <option value="id">ID</option>
               <option value="name">Name</option>
@@ -137,4 +134,4 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default Packages;
