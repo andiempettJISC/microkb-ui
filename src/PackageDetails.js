@@ -22,7 +22,7 @@ const PackageDetails = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(`/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/pkg/${packageData.identifier}?format=json`);
+        const response = await fetch(`/package/${packageData.identifier}`); //fetch(`/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/pkg/${packageData.identifier}?format=json`);
         if (!response.ok) {
           throw new Error(`Failed to fetch package details: ${response.status}`);
         }
@@ -62,7 +62,7 @@ const PackageDetails = () => {
   };
 
   const filteredTitles = fullPackageDetails?.TitleList.filter(title =>
-    title.Title.toLowerCase().includes(titleSearchTerm)
+    title.publication_title.toLowerCase().includes(titleSearchTerm)
   );
 
   if (loading) return (
@@ -96,16 +96,16 @@ const PackageDetails = () => {
 
       {/* Package Details Panel */}
       <div className="box mt-4">
-        <h2 className="title is-3">{fullPackageDetails.PackageName || "Untitled"}</h2>
-        <p><strong>Package ID:</strong> {fullPackageDetails.PackageID}</p>
-        <p><strong>Term Start Date:</strong> {formatDate(fullPackageDetails.PackageTermStartDate)}</p>
-        <p><strong>Term End Date:</strong> {formatDate(fullPackageDetails.PackageTermEndDate)}</p>
+        <h2 className="title is-3">{fullPackageDetails.name || "Untitled"}</h2>
+        <p><strong>Package ID:</strong> {fullPackageDetails.identifier}</p>
+        {/* <p><strong>Term Start Date:</strong> {formatDate(fullPackageDetails.PackageTermStartDate)}</p> */}
+        {/* <p><strong>Term End Date:</strong> {formatDate(fullPackageDetails.PackageTermEndDate)}</p> */}
         <ul>
-          {fullPackageDetails.RelatedOrgs.map((org, index) => (
+          {/* {fullPackageDetails.RelatedOrgs.map((org, index) => (
             <li key={index}>
               <strong>{org.OrgRole}</strong>: {org.OrgName}
             </li>
-          ))}
+          ))} */}
         </ul>
         {/* Download Buttons */}
         <div className="buttons mt-4">

@@ -16,7 +16,7 @@ const Packages = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const response = await fetch('/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/idx?format=json&max=0');
+        const response = await fetch('packages'); //fetch('/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/idx?format=json&max=0');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -122,7 +122,7 @@ const Packages = () => {
               <br />
               <button
                 className="button is-link is-small mt-2 is-primary has-text-white-bis has-background-primary-25"
-                onClick={() => navigate(`/package/${pkg.identifier}`, { state: { pkg } })}
+                onClick={() => navigate(`/detail/${pkg.identifier}`, { state: { pkg } })}
               >
                 View Details
               </button>
