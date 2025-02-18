@@ -7,13 +7,13 @@ const Navbar = () => {
     <nav className="navbar is-light">
       <div className="navbar-brand">
         <Link to="/" className="navbar-item is-size-3">
-          μkb
+          <strong>μkb</strong>
         </Link>
       </div>
       <div className="navbar-menu">
         <div className="navbar-start">
           <Link to="/create" className="navbar-item">
-            Upload
+            Create Package
           </Link>
         </div>
       </div>

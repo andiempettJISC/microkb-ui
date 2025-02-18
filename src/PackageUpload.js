@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 
-const PackageUpload = () => {
+const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackageName }) => {
   const [file, setFile] = useState(null);
-  const [packageId, setPackageId] = useState('');
-  const [packageName, setPackageName] = useState('');
+  const [packageId, setPackageId] = useState(initialPackageId || '');
+  const [packageName, setPackageName] = useState(initialPackageName || '');
   const [responseMessage, setResponseMessage] = useState('');
   const [warnings, setWarnings] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (initialPackageId) {
+      setPackageId(initialPackageId);
+    }
+    if (initialPackageName) {
+      setPackageName(initialPackageName);
+    }
+  }, [initialPackageId, initialPackageName]);
+
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -44,11 +54,11 @@ const PackageUpload = () => {
   };
 
   return (
-    <div className="container mt-6">
+    <div className="container">
       <h1 className="title is-4">Upload Package</h1>
       <form onSubmit={handleUpload}>
         <div className="field">
-        <label className="label">Package File</label>
+          <label className="label">Package File</label>
           <div className="control">
             <div className="file has-name is-fullwidth">
               <label className="file-label">
@@ -71,6 +81,7 @@ const PackageUpload = () => {
               type="text"
               value={packageId}
               onChange={(e) => setPackageId(e.target.value)}
+              disabled={!!initialPackageId}
             />
           </div>
         </div>
@@ -88,7 +99,7 @@ const PackageUpload = () => {
         </div>
         <div className="field">
           <div className="control">
-            <button className="button is-primary" type="submit">
+            <button className="button is-primary-25 has-text-white-bis has-background-primary-25" type="submit">
               Upload
             </button>
           </div>

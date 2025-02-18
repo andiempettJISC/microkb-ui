@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import 'bulma/css/bulma.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCopy } from '@fortawesome/free-solid-svg-icons';
+import PackageUpload from './PackageUpload';
+
 
 const PackageDetails = () => {
   const location = useLocation();
@@ -82,7 +84,7 @@ const PackageDetails = () => {
   }
 
   return (
-    <div className="container mt-6">
+    <div className="container">
       {/* Back Button */}
       <button
         className="button is-primary-25 has-text-white-bis has-background-primary-25"
@@ -118,19 +120,17 @@ const PackageDetails = () => {
           </a>
           <a
             className="button is-primary-25 has-text-white-bis has-background-primary-25"
-            href={packageData.packageContentAsXml}
-            download
-          >
-            Download XML
-          </a>
-          <a
-            className="button is-primary-25 has-text-white-bis has-background-primary-25"
             href={packageData.packageContentAsKbart}
             download
           >
             Download KBART
           </a>
         </div>
+      </div>
+
+      {/* Upload New Version */}
+      <div className="box">
+        <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} />
       </div>
 
       {/* Collapsible Package Titles Panel */}
@@ -160,17 +160,17 @@ const PackageDetails = () => {
             <ul>
               {filteredTitles.map((title, index) => (
                 <li key={index} className="py-4">
-                  <strong>{title.Title}</strong>
+                  <strong>{title.publication_title}</strong>
                   <ul className="mt-2">
                     <p><strong>Type:</strong> {title.publicationType || "Unknown"}</p>
-                    <p><strong>eISSN:</strong> {title.TitleIDs?.eissn || "N/A"}</p>
+                    <p><strong>eISSN:</strong> {title.online_identifier || "N/A"}</p>
                     <li>
-                      <strong>ISSN:</strong> {title.TitleIDs?.issn || "N/A"}
-                      {title.TitleIDs?.issn && title.TitleIDs.issn !== "N/A" && (
+                      <strong>ISSN:</strong> {title.print_identifier || "N/A"}
+                      {title.print_identifier && title.print_identifier !== "N/A" && (
                         <div className="buttons are-small mt-2">
                           <button
                             className="button is-info is-light"
-                            onClick={(e) => copyToClipboard(`https://api.openalex.org/sources/issn:${title.TitleIDs.issn}`, e)}
+                            onClick={(e) => copyToClipboard(`https://api.openalex.org/sources/issn:${title.print_identifier}`, e)}
                           >
                             <span className="icon">
                               <FontAwesomeIcon icon={faCopy} />
@@ -179,7 +179,7 @@ const PackageDetails = () => {
                           </button>
                           <button
                             className="button is-info is-light"
-                            onClick={(e) => copyToClipboard(`https://explore.openalex.org/sources/issn:${title.TitleIDs.issn}`, e)}
+                            onClick={(e) => copyToClipboard(`https://explore.openalex.org/sources/issn:${title.print_identifier}`, e)}
                           >
                             <span className="icon">
                               <FontAwesomeIcon icon={faCopy} />
@@ -188,7 +188,7 @@ const PackageDetails = () => {
                           </button>
                           <button
                             className="button is-warning is-light"
-                            onClick={(e) => copyToClipboard(`https://api.crossref.org/journals/${title.TitleIDs.issn}`, e)}
+                            onClick={(e) => copyToClipboard(`https://api.crossref.org/journals/${title.print_identifier}`, e)}
                           >
                             <span className="icon">
                               <FontAwesomeIcon icon={faCopy} />
@@ -197,7 +197,7 @@ const PackageDetails = () => {
                           </button>
                           <button
                             className="button is-warning is-light"
-                            onClick={(e) => copyToClipboard(`https://api.crossref.org/journals/${title.TitleIDs.issn}/works`, e)}
+                            onClick={(e) => copyToClipboard(`https://api.crossref.org/journals/${title.print_identifier}/works`, e)}
                           >
                             <span className="icon">
                               <FontAwesomeIcon icon={faCopy} />
