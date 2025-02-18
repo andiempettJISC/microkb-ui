@@ -55,7 +55,6 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
 
   return (
     <div className="container">
-      <h1 className="title is-4">Upload Package</h1>
       <form onSubmit={handleUpload}>
         <div className="field">
           <label className="label">Package File</label>

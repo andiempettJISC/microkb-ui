@@ -14,6 +14,7 @@ const PackageDetails = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isTitlesExpanded, setIsTitlesExpanded] = useState(false);
+  const [isUploadExpanded, setIsUploadExpanded] = useState(false);
   const [copyNotification, setCopyNotification] = useState({ show: false, text: '' });
   const [titleSearchTerm, setTitleSearchTerm] = useState('');
 
@@ -29,7 +30,7 @@ const PackageDetails = () => {
           throw new Error(`Failed to fetch package details: ${response.status}`);
         }
         const data = await response.json();
-        setFullPackageDetails(data.Packages[0]); // Use the first package
+        setFullPackageDetails(data.Packages[0]);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -130,8 +131,23 @@ const PackageDetails = () => {
 
       {/* Upload New Version */}
       <div className="box">
-        <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} />
+        <div className="is-flex is-justify-content-space-between">
+          <h2 className="title is-5">Modify package</h2>
+          <button
+            className="button is-primary-25 has-text-white-bis has-background-primary-25"
+            onClick={() => setIsUploadExpanded(!isUploadExpanded)}
+          >
+            {isUploadExpanded ? "Collapse" : "Expand"}
+          </button>
+        </div>
+        {isUploadExpanded && (
+          <>
+            {/* <div className="box"> */}
+            {/* <h2 className="title is-5">Modify Package</h2> */}
+            <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} />
+          </>)}
       </div>
+      
 
       {/* Collapsible Package Titles Panel */}
       <div className="box">
