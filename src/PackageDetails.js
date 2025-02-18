@@ -19,25 +19,25 @@ const PackageDetails = () => {
   const [titleSearchTerm, setTitleSearchTerm] = useState('');
 
   // Fetch full package details
-  useEffect(() => {
-    const fetchPackageDetails = async () => {
-      if (!packageData.packageContentAsJson) return;
+  const fetchPackageDetails = async () => {
+    if (!packageData.packageContentAsJson) return;
 
-      try {
-        setLoading(true);
-        const response = await fetch(`/package/${packageData.identifier}`); //fetch(`/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/pkg/${packageData.identifier}?format=json`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch package details: ${response.status}`);
-        }
-        const data = await response.json();
-        setFullPackageDetails(data.Packages[0]);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+    try {
+      setLoading(true);
+      const response = await fetch(`/package/${packageData.identifier}`); //fetch(`/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/pkg/${packageData.identifier}?format=json`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch package details: ${response.status}`);
       }
-    };
+      const data = await response.json();
+      setFullPackageDetails(data.Packages[0]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPackageDetails();
   }, [packageData.packageContentAsJson, packageData.identifier]);
 
@@ -142,9 +142,7 @@ const PackageDetails = () => {
         </div>
         {isUploadExpanded && (
           <>
-            {/* <div className="box"> */}
-            {/* <h2 className="title is-5">Modify Package</h2> */}
-            <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} />
+            <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} onUploadSuccess={fetchPackageDetails} />
           </>)}
       </div>
       

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 
-const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackageName }) => {
+const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackageName, onUploadSuccess }) => {
   const [file, setFile] = useState(null);
   const [packageId, setPackageId] = useState(initialPackageId || '');
   const [packageName, setPackageName] = useState(initialPackageName || '');
@@ -44,6 +44,9 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
         setResponseMessage(data.message);
         setWarnings(data.warnings || []);
         setErrorMessage('');
+        if (onUploadSuccess) {
+          onUploadSuccess();
+        }
       }
     } catch (error) {
       setErrorMessage('Failed to upload package');
