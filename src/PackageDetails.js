@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import 'bulma/css/bulma.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faCopy } from '@fortawesome/free-solid-svg-icons';
 import PackageUpload from './PackageUpload';
-
 
 const PackageDetails = () => {
   const location = useLocation();
@@ -15,11 +14,12 @@ const PackageDetails = () => {
   const [error, setError] = useState(null);
   const [isTitlesExpanded, setIsTitlesExpanded] = useState(false);
   const [isUploadExpanded, setIsUploadExpanded] = useState(false);
+  const [isModalActive, setIsModalActive] = useState(false);
   const [copyNotification, setCopyNotification] = useState({ show: false, text: '' });
   const [titleSearchTerm, setTitleSearchTerm] = useState('');
 
   // Fetch full package details
-  const fetchPackageDetails = async () => {
+  const fetchPackageDetails = useCallback(async () => {
     if (!packageData.packageContentAsJson) return;
 
     try {
@@ -35,11 +35,11 @@ const PackageDetails = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [packageData.packageContentAsJson, packageData.identifier]);
 
   useEffect(() => {
     fetchPackageDetails();
-  }, [packageData.packageContentAsJson, packageData.identifier]);
+  }, [fetchPackageDetails]);
 
   const formatDate = (isoDate) => {
     if (!isoDate) return "Unknown";
@@ -62,6 +62,20 @@ const PackageDetails = () => {
 
   const handleTitleSearch = (event) => {
     setTitleSearchTerm(event.target.value.toLowerCase());
+  };
+
+  const handleDeletePackage = async () => {
+    try {
+      const response = await fetch(`/package/${packageData.identifier}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to delete package: ${response.status}`);
+      }
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const filteredTitles = fullPackageDetails?.TitleList.filter(title =>
@@ -103,13 +117,13 @@ const PackageDetails = () => {
         <p><strong>Package ID:</strong> {fullPackageDetails.identifier}</p>
         {/* <p><strong>Term Start Date:</strong> {formatDate(fullPackageDetails.PackageTermStartDate)}</p> */}
         {/* <p><strong>Term End Date:</strong> {formatDate(fullPackageDetails.PackageTermEndDate)}</p> */}
-        <ul>
-          {/* {fullPackageDetails.RelatedOrgs.map((org, index) => (
+        {/* <ul>
+          {fullPackageDetails.RelatedOrgs.map((org, index) => (
             <li key={index}>
               <strong>{org.OrgRole}</strong>: {org.OrgName}
             </li>
-          ))} */}
-        </ul>
+          ))}
+        </ul> */}
         {/* Download Buttons */}
         <div className="buttons mt-4">
           <a
@@ -129,7 +143,7 @@ const PackageDetails = () => {
         </div>
       </div>
 
-      {/* Upload New Version */}
+      {/* Modify Package Panel */}
       <div className="box">
         <div className="is-flex is-justify-content-space-between">
           <h2 className="title is-5">Modify package</h2>
@@ -143,9 +157,33 @@ const PackageDetails = () => {
         {isUploadExpanded && (
           <>
             <PackageUpload packageId={fullPackageDetails.identifier} packageName={fullPackageDetails.name} onUploadSuccess={fetchPackageDetails} />
-          </>)}
+            <button
+              className="button is-danger mt-4"
+              onClick={() => setIsModalActive(true)}
+            >
+              Delete Package
+            </button>
+          </>
+        )}
       </div>
-      
+
+      {/* Confirmation Modal */}
+      <div className={`modal ${isModalActive ? 'is-active' : ''}`}>
+        <div className="modal-background"></div>
+        <div className="modal-card">
+          <header className="modal-card-head">
+            <p className="modal-card-title">Confirm Deletion</p>
+            <button className="delete" aria-label="close" onClick={() => setIsModalActive(false)}></button>
+          </header>
+          <section className="modal-card-body">
+            <p>Are you sure you want to delete this package?</p>
+          </section>
+          <footer className="modal-card-foot">
+            <button className="button is-danger" onClick={handleDeletePackage}>Delete</button>
+            <button className="button" onClick={() => setIsModalActive(false)}>Cancel</button>
+          </footer>
+        </div>
+      </div>
 
       {/* Collapsible Package Titles Panel */}
       <div className="box">
@@ -176,7 +214,7 @@ const PackageDetails = () => {
                 <li key={index} className="py-4">
                   <strong>{title.publication_title}</strong>
                   <ul className="mt-2">
-                    <p><strong>Type:</strong> {title.publicationType || "Unknown"}</p>
+                    <p><strong>Type:</strong> {title.publication_type || "Unknown"}</p>
                     <p><strong>eISSN:</strong> {title.online_identifier || "N/A"}</p>
                     <li>
                       <strong>ISSN:</strong> {title.print_identifier || "N/A"}
