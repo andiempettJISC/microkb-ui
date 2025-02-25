@@ -9,6 +9,7 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
   const [packageName, setPackageName] = useState(initialPackageName || '');
   const [responseMessage, setResponseMessage] = useState('');
   const [warnings, setWarnings] = useState([]);
+  const [errors, setErrors] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
@@ -19,7 +20,6 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
       setPackageName(initialPackageName);
     }
   }, [initialPackageId, initialPackageName]);
-
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -40,12 +40,14 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
       const data = await response.json();
       if (!response.ok) {
         setErrorMessage(data.error || 'Failed to upload package');
+        setErrors(data.errors || []);
         setResponseMessage('');
-        setWarnings([]);
+        setWarnings(data.warnings || []);
       } else {
         setResponseMessage(data.message);
         setWarnings(data.warnings || []);
         setErrorMessage('');
+        setErrors([]);
         if (onUploadSuccess) {
           onUploadSuccess();
         }
@@ -54,6 +56,7 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
       setErrorMessage('Failed to upload package');
       setResponseMessage('');
       setWarnings([]);
+      setErrors([]);
       console.error('Error:', error);
     }
   };
@@ -115,20 +118,33 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
       {responseMessage && (
         <div className={`notification ${warnings.length ? 'is-warning' : 'is-success'} mt-4`}>
           {responseMessage}
-          {warnings.length > 0 && (
-            <ul>
-              {warnings.map((warning, index) => (
-                <li key={index}>
-                  <strong>Row {warning.row}:</strong> {warning.warning} (Data: {warning.data})
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       )}
       {errorMessage && (
         <div className="notification is-danger mt-4">
           {errorMessage}
+        </div>
+      )}
+      {warnings.length > 0 && (
+        <div className="notification is-warning mt-4">
+          <ul>
+            {warnings.map((warning, index) => (
+              <li key={index}>
+                <strong>Row {warning.row}:</strong> {warning.warning} (Data: {warning.data})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {errors.length > 0 && (
+        <div className="notification is-danger mt-4">
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index}>
+                <strong>Row {error.row}:</strong> {error.error} (Data: {error.data})
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
