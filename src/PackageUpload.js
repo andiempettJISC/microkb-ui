@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import 'bulma/css/bulma.min.css';
 
 const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackageName, onUploadSuccess }) => {
@@ -102,7 +104,10 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
         <div className="field">
           <div className="control">
             <button className="button is-primary-25 has-text-white-bis has-background-primary-25" type="submit">
-              Upload
+              <span>Upload</span>
+              <span className="icon is-small">
+                <FontAwesomeIcon icon={faUpload} />
+              </span>
             </button>
           </div>
         </div>

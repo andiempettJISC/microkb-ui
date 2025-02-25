@@ -144,8 +144,8 @@ const PackageDetails = () => {
       </div>
 
       {/* Modify Package Panel */}
-      <div className="box" onClick={() => setIsUploadExpanded(!isUploadExpanded)}>
-        <div className="is-flex is-justify-content-space-between">
+      <div className="box">
+        <div className="is-flex is-justify-content-space-between" onClick={() => setIsUploadExpanded(!isUploadExpanded)}>
           <h2 className="title is-5">Modify package</h2>
           <icon className="icon is-large">
             <FontAwesomeIcon icon={isUploadExpanded ? faChevronUp : faChevronDown} />
@@ -183,8 +183,8 @@ const PackageDetails = () => {
       </div>
 
       {/* Collapsible Package Titles Panel */}
-      <div className="box" onClick={() => setIsTitlesExpanded(!isTitlesExpanded)}>
-        <div className="is-flex is-justify-content-space-between">
+      <div className="box">
+        <div className="is-flex is-justify-content-space-between" onClick={() => setIsTitlesExpanded(!isTitlesExpanded)}>
           <h2 className="title is-5">Package Titles</h2>
           <icon className="icon is-large">
             <FontAwesomeIcon icon={isTitlesExpanded ? faChevronUp : faChevronDown} />
