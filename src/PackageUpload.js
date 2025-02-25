@@ -76,7 +76,7 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
           </div>
         </div>
         <div className="field">
-          <label className="label">Package ID</label>
+          <label className="label">{initialPackageId ? "Package ID" : "Package ID (Optional)"}</label>
           <div className="control">
             <input
               className="input"

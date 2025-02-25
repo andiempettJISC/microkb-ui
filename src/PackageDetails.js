@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import 'bulma/css/bulma.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCopy, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import PackageUpload from './PackageUpload';
 
 const PackageDetails = () => {
@@ -144,15 +144,12 @@ const PackageDetails = () => {
       </div>
 
       {/* Modify Package Panel */}
-      <div className="box">
+      <div className="box" onClick={() => setIsUploadExpanded(!isUploadExpanded)}>
         <div className="is-flex is-justify-content-space-between">
           <h2 className="title is-5">Modify package</h2>
-          <button
-            className="button is-primary-25 has-text-white-bis has-background-primary-25"
-            onClick={() => setIsUploadExpanded(!isUploadExpanded)}
-          >
-            {isUploadExpanded ? "Collapse" : "Expand"}
-          </button>
+          <icon className="icon is-large">
+            <FontAwesomeIcon icon={isUploadExpanded ? faChevronUp : faChevronDown} />
+          </icon>
         </div>
         {isUploadExpanded && (
           <>
@@ -186,15 +183,12 @@ const PackageDetails = () => {
       </div>
 
       {/* Collapsible Package Titles Panel */}
-      <div className="box">
+      <div className="box" onClick={() => setIsTitlesExpanded(!isTitlesExpanded)}>
         <div className="is-flex is-justify-content-space-between">
           <h2 className="title is-5">Package Titles</h2>
-          <button
-            className="button is-primary-25 has-text-white-bis has-background-primary-25"
-            onClick={() => setIsTitlesExpanded(!isTitlesExpanded)}
-          >
-            {isTitlesExpanded ? "Collapse" : "Expand"}
-          </button>
+          <icon className="icon is-large">
+            <FontAwesomeIcon icon={isTitlesExpanded ? faChevronUp : faChevronDown} />
+          </icon>
         </div>
         {isTitlesExpanded && (
           <>
