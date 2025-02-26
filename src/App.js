@@ -6,18 +6,16 @@ import PackageUpload from './PackageUpload';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
-
-
 function App() {
   return (
     <Router>
-      <div className="site">
+      <div className="site" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
-        <div className="site-content mt-6">
+        <div className="site-content" style={{ flex: '1' }}>
           <Routes>
             <Route path="/" element={<Packages />} />
             <Route path="/detail/:id" element={<PackageDetails />} />
-            <Route path="/create" element={<PackageUpload />} />
+            <Route path="/create" element={<div className="mt-6"><PackageUpload /></div>} />
           </Routes>
         </div>
         <Footer />

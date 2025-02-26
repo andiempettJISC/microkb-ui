@@ -99,7 +99,7 @@ const PackageDetails = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container mt-6">
       {/* Back Button */}
       <button
         className="button is-primary-25 has-text-white-bis has-background-primary-25"

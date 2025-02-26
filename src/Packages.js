@@ -82,7 +82,7 @@ const Packages = () => {
   if (packages.length === 0) return <div className="notification is-warning has-background-warning-85">No packages available.</div>;
 
   return (
-    <div className="container">
+    <div className="container mt-6">
       <h1 className="title is-3 has-text-primary-25">Search Packages</h1>
 
       {/* Combined Search and Sort Bar */}
