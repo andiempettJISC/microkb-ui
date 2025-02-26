@@ -12,7 +12,7 @@ const Packages = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('name'); // Default sort by Name
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(25);
+  const [perPage, setPerPage] = useState(10);
   const [totalPackages, setTotalPackages] = useState(0);
   const navigate = useNavigate();
 
@@ -128,6 +128,7 @@ const Packages = () => {
         {filteredPackages.map((pkg, index) => (
           <li key={index} className="list-item mt-4">
             <div className="content">
+            <div className="box mt-4">
               <strong>{pkg.name || 'Untitled'}</strong>
               <br />
               <small>
@@ -142,6 +143,7 @@ const Packages = () => {
               >
                 View Details
               </button>
+              </div>
             </div>
           </li>
         ))}
@@ -158,6 +160,11 @@ const Packages = () => {
               <option value="50">50</option>
             </select>
           </div>
+        </div>
+        <div className="control">
+          <p className="is-size-6 mt-2">
+            Page {currentPage} of {totalPages}
+          </p>
         </div>
         <div className="control">
           <button
