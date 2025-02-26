@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import 'bulma/css/bulma.min.css';
 
 const Packages = () => {
@@ -11,12 +11,16 @@ const Packages = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOption, setSortOption] = useState('name'); // Default sort by Name
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(25);
+  const [totalPackages, setTotalPackages] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPackages = async () => {
+      setLoading(true);
       try {
-        const response = await fetch('packages'); //fetch('/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/idx?format=json&max=0');
+        const response = await fetch(`/packages?per_page=${perPage}&page=${currentPage}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -24,6 +28,7 @@ const Packages = () => {
         const packagesData = data.packages || [];
         setPackages(packagesData);
         setFilteredPackages(packagesData);
+        setTotalPackages(data.total);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -32,7 +37,7 @@ const Packages = () => {
     };
 
     fetchPackages();
-  }, []);
+  }, [currentPage, perPage]);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -65,6 +70,15 @@ const Packages = () => {
     setFilteredPackages(sorted);
   };
 
+  const handlePerPageChange = (event) => {
+    setPerPage(parseInt(event.target.value, 10));
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   const formatDate = (isoDate) => {
     if (!isoDate) return 'Unknown';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -80,6 +94,8 @@ const Packages = () => {
   );
   if (error) return <div className="notification is-danger has-background-danger-85">Error loading packages: {error}</div>;
   if (packages.length === 0) return <div className="notification is-warning has-background-warning-85">No packages available.</div>;
+
+  const totalPages = Math.ceil(totalPackages / perPage);
 
   return (
     <div className="container mt-6">
@@ -130,6 +146,38 @@ const Packages = () => {
           </li>
         ))}
       </ul>
+
+      {/* Pagination Controls */}
+      <div className="field is-grouped mt-6 is-grouped-right">
+        <div className="control">
+          <div className="select">
+            <select value={perPage} onChange={handlePerPageChange}>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+        <div className="control">
+          <button
+            className="button is-white is-medium"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+        </div>
+        <div className="control">
+          <button
+            className="button is-white is-medium"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
