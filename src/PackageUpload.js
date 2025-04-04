@@ -7,8 +7,9 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
   const [file, setFile] = useState(null);
   const [packageId, setPackageId] = useState(initialPackageId || '');
   const [packageName, setPackageName] = useState(initialPackageName || '');
-  const [customIdentifierType, setCustomIdentifierType] = useState('kbplus');
+  const [customIdentifierType, setCustomIdentifierType] = useState('');
   const [customIdentifierValue, setCustomIdentifierValue] = useState('');
+  const [identifierTypes, setIdentifierTypes] = useState([]);
   const [responseMessage, setResponseMessage] = useState('');
   const [warnings, setWarnings] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -22,6 +23,27 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
       setPackageName(initialPackageName);
     }
   }, [initialPackageId, initialPackageName]);
+
+  // Fetch valid identifier types from the API
+  useEffect(() => {
+    const fetchIdentifierTypes = async () => {
+      try {
+        const response = await fetch('/packages/metadata/additional_identifiers');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch identifier types: ${response.status}`);
+        }
+        const data = await response.json();
+        setIdentifierTypes(data);
+        if (data.length > 0) {
+          setCustomIdentifierType(data[0]); // Set the first identifier type as default
+        }
+      } catch (error) {
+        console.error('Error fetching identifier types:', error);
+      }
+    };
+
+    fetchIdentifierTypes();
+  }, []);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -118,8 +140,11 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
           <div className="control">
             <div className="select">
               <select value={customIdentifierType} onChange={(e) => setCustomIdentifierType(e.target.value)}>
-                <option value="kbplus">KBPlus</option>
-                {/* Future scope for more identifier types */}
+                {identifierTypes.map((type, index) => (
+                  <option key={index} value={type}>
+                    {type}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
