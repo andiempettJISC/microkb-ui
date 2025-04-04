@@ -7,6 +7,8 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
   const [file, setFile] = useState(null);
   const [packageId, setPackageId] = useState(initialPackageId || '');
   const [packageName, setPackageName] = useState(initialPackageName || '');
+  const [customIdentifierType, setCustomIdentifierType] = useState('kbplus');
+  const [customIdentifierValue, setCustomIdentifierValue] = useState('');
   const [responseMessage, setResponseMessage] = useState('');
   const [warnings, setWarnings] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -31,6 +33,13 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
     formData.append('file', file);
     formData.append('package_id', packageId);
     formData.append('package_name', packageName);
+
+    if (customIdentifierValue) {
+      const additionalIdentifiersJson = JSON.stringify([
+        { type: customIdentifierType, identifier: parseInt(customIdentifierValue, 10) },
+      ]);
+      formData.append('additional_identifiers', additionalIdentifiersJson);
+    }
 
     try {
       const response = await fetch('/upload', {
@@ -101,6 +110,26 @@ const PackageUpload = ({ packageId: initialPackageId, packageName: initialPackag
               value={packageName}
               onChange={(e) => setPackageName(e.target.value)}
               required
+            />
+          </div>
+        </div>
+        <div className="field">
+          <label className="label">Additional Identifier (Optional)</label>
+          <div className="control">
+            <div className="select">
+              <select value={customIdentifierType} onChange={(e) => setCustomIdentifierType(e.target.value)}>
+                <option value="kbplus">KBPlus</option>
+                {/* Future scope for more identifier types */}
+              </select>
+            </div>
+          </div>
+          <div className="control mt-2">
+            <input
+              className="input"
+              type="text"
+              placeholder="Enter additional identifier"
+              value={customIdentifierValue}
+              onChange={(e) => setCustomIdentifierValue(e.target.value)}
             />
           </div>
         </div>

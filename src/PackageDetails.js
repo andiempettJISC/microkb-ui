@@ -24,7 +24,7 @@ const PackageDetails = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`/package/${packageData.identifier}`); //fetch(`/jisc-exp-tpd-public-api-v1-dev/api/v1/publicExport/pkg/${packageData.identifier}?format=json`);
+      const response = await fetch(`/package/${packageData.identifier}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch package details: ${response.status}`);
       }
@@ -115,15 +115,18 @@ const PackageDetails = () => {
       <div className="box mt-4">
         <h2 className="title is-3">{fullPackageDetails.name || "Untitled"}</h2>
         <p><strong>Package ID:</strong> {fullPackageDetails.identifier}</p>
-        {/* <p><strong>Term Start Date:</strong> {formatDate(fullPackageDetails.PackageTermStartDate)}</p> */}
-        {/* <p><strong>Term End Date:</strong> {formatDate(fullPackageDetails.PackageTermEndDate)}</p> */}
-        {/* <ul>
-          {fullPackageDetails.RelatedOrgs.map((org, index) => (
-            <li key={index}>
-              <strong>{org.OrgRole}</strong>: {org.OrgName}
-            </li>
-          ))}
-        </ul> */}
+        {fullPackageDetails.additional_identifiers && fullPackageDetails.additional_identifiers.length > 0 && (
+          <div>
+            <strong>Additional Identifiers:</strong>
+            <ul>
+              {fullPackageDetails.additional_identifiers.map((id, index) => (
+                <li key={index}>
+                  <strong>{id.type}:</strong> {id.identifier}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {/* Download Buttons */}
         <div className="buttons mt-4">
           <a

@@ -13,14 +13,13 @@ const Packages = () => {
   const [sortOption, setSortOption] = useState('name'); // Default sort by Name
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [totalPackages, setTotalPackages] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPackages = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/packages?per_page=${perPage}&page=${currentPage}`);
+        const response = await fetch(`/packages?all=true`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -28,7 +27,6 @@ const Packages = () => {
         const packagesData = data.packages || [];
         setPackages(packagesData);
         setFilteredPackages(packagesData);
-        setTotalPackages(data.total);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -37,7 +35,7 @@ const Packages = () => {
     };
 
     fetchPackages();
-  }, [currentPage, perPage]);
+  }, []);
 
   const handleSearch = (event) => {
     const term = event.target.value.toLowerCase();
@@ -49,6 +47,7 @@ const Packages = () => {
         (pkg.identifier && pkg.identifier.toLowerCase().includes(term))
     );
     setFilteredPackages(filtered);
+    setCurrentPage(1); // Reset to first page
   };
 
   const handleSort = (event) => {
@@ -95,7 +94,8 @@ const Packages = () => {
   if (error) return <div className="notification is-danger has-background-danger-85">Error loading packages: {error}</div>;
   if (packages.length === 0) return <div className="notification is-warning has-background-warning-85">No packages available.</div>;
 
-  const totalPages = Math.ceil(totalPackages / perPage);
+  const totalPages = Math.ceil(filteredPackages.length / perPage);
+  const displayedPackages = filteredPackages.slice((currentPage - 1) * perPage, currentPage * perPage);
 
   return (
     <div className="container mt-6">
@@ -125,7 +125,7 @@ const Packages = () => {
 
       {/* Packages List */}
       <ul className="list is-hoverable mt-4">
-        {filteredPackages.map((pkg, index) => (
+        {displayedPackages.map((pkg, index) => (
           <li key={index} className="list-item mt-4">
             <div className="content">
             <div className="box mt-4">
